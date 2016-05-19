@@ -52,6 +52,14 @@ public static class Prefs
       set { PlayerPrefs.SetInt("music enabled", value != 0); }
    }
    
+   private static List<T> GetListPrefs(string key){
+    int count = Get(key);
+    List<T> list = new List<T>;
+    for (int i=0; i < count; i++){
+     
+    }
+   }
+   
    private static void NewListPrefs<T>(string key, List<T> list){
       int i=0;
       foreach (T pref in list){
