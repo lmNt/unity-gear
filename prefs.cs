@@ -13,7 +13,30 @@ public static class Prefs
       }
    }
    
-   public static void Set<T>(string key, T value){
+   public static string Version
+   {
+      get { return Prefs.Get("version", "1.0"); }
+      set { Prefs.Set("version", value); }
+   }
+ 
+   public static int LastScore
+   {
+      get { return Prefs.Get("last score"); }
+      set { Prefs.Set("last score", value); }
+   }
+   public static int Highscore
+   {
+      get { return Prefs.Get("highscore"); }
+      set { Prefs.Set("highscore", value); }
+   }
+ 
+   public static bool MusicEnabled
+   {
+      get { return Prefs.Get("music enabled"); }
+      set { Prefs.Set("music enabled", value); }
+   }
+   
+   private static void Set<T>(string key, T value){
       if (typeof(T) == typeof(string))
         PlayerPrefs.SetString(key, value);
       else if (typeof(T) == typeof(int))
@@ -24,7 +47,9 @@ public static class Prefs
         PlayerPrefs.SetFloat(key, value);
    }
     
-    public static T Get<T>(string key){
+    private static T Get<T>(string key, T default_value = default(T)){
+      if (!Prefs.Has(key)) return default_value;
+      
       if (typeof(T) == typeof(string))
         return PlayerPrefs.GetString(key);
       else if (typeof(T) == typeof(int))
@@ -34,51 +59,39 @@ public static class Prefs
       else if (typeof(T) == typeof(float))
         return PlayerPrefs.GetFloat(key);
    }
- 
-   public static string Version
-   {
-      get { return PlayerPrefs.GetString("version", "1.0"); }
+   
+   private static bool Has(string key){
+    return PlayerPrefs.HasKey(key);
    }
  
-   public static int LastScore
-   {
-      get { return PlayerPrefs.GetInt("last score", 0); }
-      set { PlayerPrefs.SetInt("last score", value); }
-   }
- 
-   public static bool MusicEnabled
-   {
-      get { return PlayerPrefs.GetInt("music enabled", 1) != 0; }
-      set { PlayerPrefs.SetInt("music enabled", value != 0); }
-   }
+
    
    private static List<T> GetListPrefs(string key){
-    int count = Get(key);
+    if (!Prefs.Has(key)) return null;
+    int count = Prefs.Get(key);
     List<T> list = new List<T>;
     for (int i=0; i < count; i++){
-     
+     list.Add(Prefs.Get<T>(key+i.ToString()));
     }
+    return list;
    }
    
-   private static void NewListPrefs<T>(string key, List<T> list){
-      int i=0;
+   private static void NewListPrefs<T>(string key, List<T> list, int offset = 0){
+      int i=offset;
       foreach (T pref in list){
-        Set<T>(key + i.ToString(), pref);
+        Prefs.Set<T>(key + i.ToString(), pref);
         i++;
       }
    }
    
    private static void AppendListPrefs(string key, List<T> list){
-      if (PlayerPrefs.HasKey(key)){
-        NewListPrefs<T>(key, list);
+      if (!Prefs.Has(key)){
+        Prefs.NewListPrefs<T>(key, list);
       }
       else {
-        int count = PlayerPrefs.GetInt(key);
-        Set<T>(key, count+list.Count);
-        foreach (T pref in list){
-          Set<T>(key + count.ToString(), pref);
-          count++;
-        }
+        int count = Prefs.Get(key);
+        Prefs.Set<T>(key, count+list.Count);
+        Prefs.NewListPrefs<T>(key, list, count);
       }
    }
 }
