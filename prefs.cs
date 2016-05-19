@@ -52,23 +52,24 @@ public static class Prefs
       set { PlayerPrefs.SetInt("music enabled", value != 0); }
    }
    
-   private static NewListPrefs(string key, List<T> list){
+   private static void NewListPrefs<T>(string key, List<T> list){
       int i=0;
       foreach (T pref in list){
         Set<T>(key + i.ToString(), pref);
         i++;
       }
    }
-   private static AppendListPrefs(string key, List<T> list){
+   
+   private static void AppendListPrefs(string key, List<T> list){
       if (PlayerPrefs.HasKey(key)){
-        NewListPrefs(key, list);
+        NewListPrefs<T>(key, list);
       }
       else {
         int count = PlayerPrefs.GetInt(key);
-        PlayerPrefs.SetInt(key, count+list.Count);
-        foreach (float pref in list){
-          PlayerPrefs.SetFloat(key + i.ToString(), pref);
-          i++;
+        Set<T>(key, count+list.Count);
+        foreach (T pref in list){
+          Set<T>(key + count.ToString(), pref);
+          count++;
         }
       }
    }
