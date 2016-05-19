@@ -52,14 +52,14 @@ public static class Prefs
       set { PlayerPrefs.SetInt("music enabled", value != 0); }
    }
    
-   private static NewListPrefs(string key, List<int> list){
+   private static NewListPrefs(string key, List<T> list){
       int i=0;
-      foreach (int pref in list){
-        PlayerPrefs.SetInt(key + i.ToString(), pref);
+      foreach (T pref in list){
+        Set<T>(key + i.ToString(), pref);
         i++;
       }
    }
-   private static AppendListPrefs(string key, List<int> list){
+   private static AppendListPrefs(string key, List<T> list){
       if (PlayerPrefs.HasKey(key)){
         NewListPrefs(key, list);
       }
@@ -72,28 +72,4 @@ public static class Prefs
         }
       }
    }
-    private static NewListPrefs(string key, List<float> list){
-      int i=0;
-      PlayerPrefs.SetInt(key, list.Count);
-      foreach (float pref in list){
-        PlayerPrefs.SetFloat(key + i.ToString(), pref);
-        i++;
-      }
-    }
-    
-    private static NewListPrefs(string key, List<bool> list){
-      int i=0;
-      foreach (bool pref in list){
-        PlayerPrefs.SetInt(key + i.ToString(), Convert.ToInt32(pref));
-        i++;
-      }
-    }
-    
-    private static NewListPrefs(string key, List<string> list){
-      int i=0;
-      foreach (bool pref in list){
-        PlayerPrefs.SetString(key + i.ToString(), Convert.ToInt32(pref));
-        i++;
-      }
-    }
 }
