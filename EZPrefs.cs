@@ -3,34 +3,34 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public static class Prefs
+public static class EZPrefs
 {
    // Static constructor useful for version checking
-   static Prefs() {
+   static EZPrefs() {
       if (Version != "1.5") {
          // Invoke upgrade process if necessary.
       }
    }
 
    public static string Version {
-      get { return Prefs.Get("version", "1.0"); }
-      set { Prefs.Set("version", value); }
+      get { return EZPrefs.Get("version", "1.0"); }
+      set { EZPrefs.Set("version", value); }
    }
    public static int LastScore {
-      get { return Prefs.Get<int>("last score"); }
-      set { Prefs.Set("last score", value); }
+      get { return EZPrefs.Get<int>("last score"); }
+      set { EZPrefs.Set("last score", value); }
    }
    public static int Highscore {
-      get { return Prefs.Get<int>("highscore"); }
-      set { Prefs.Set("highscore", value); }
+      get { return EZPrefs.Get<int>("highscore"); }
+      set { EZPrefs.Set("highscore", value); }
    }
    public static bool MusicEnabled {
-      get { return Prefs.Get<bool>("music enabled"); }
-      set { Prefs.Set("music enabled", value); }
+      get { return EZPrefs.Get<bool>("music enabled"); }
+      set { EZPrefs.Set("music enabled", value); }
    }
    public static List<bool> LevelsCompleted {
-      get { return Prefs.GetListPrefs<bool>("levels completed"); }
-      set { Prefs.NewListPrefs("levels completed", value); }
+      get { return EZPrefs.GetListPrefs<bool>("levels completed"); }
+      set { EZPrefs.NewListPrefs("levels completed", value); }
    }
 
    private static void Set<T>(string key, T value) {
@@ -45,7 +45,7 @@ public static class Prefs
    }
 
    private static T Get<T>(string key, T default_value = default(T)) {
-      if (!Prefs.Has(key)) return default_value;
+      if (!EZPrefs.Has(key)) return default_value;
 
       if (typeof(T) == typeof(string))
          return (T)Convert.ChangeType(PlayerPrefs.GetString(key), typeof(T));
@@ -62,33 +62,33 @@ public static class Prefs
    }
 
    private static List<T> GetListPrefs<T>(string key) {
-      if (!Prefs.Has(key)) return null;
+      if (!EZPrefs.Has(key)) return null;
 
-      int count = Prefs.Get<int>(key);
+      int count = EZPrefs.Get<int>(key);
       List<T> list = new List<T>();
       for (int i = 0; i < count; i++) {
-         list.Add(Prefs.Get<T>(key + i.ToString()));
+         list.Add(EZPrefs.Get<T>(key + i.ToString()));
       }
       return list;
    }
 
    private static void NewListPrefs<T>(string key, List<T> list, int offset = 0) {
       int i = offset;
-      Prefs.Set<int>(key, list.Count);
+      EZPrefs.Set<int>(key, list.Count);
       foreach (T pref in list) {
-         Prefs.Set<T>(key + i.ToString(), pref);
+         EZPrefs.Set<T>(key + i.ToString(), pref);
          i++;
       }
    }
 
    private static void AppendListPrefs<T>(string key, List<T> list) {
-      if (!Prefs.Has(key)) {
-         Prefs.NewListPrefs<T>(key, list);
+      if (!EZPrefs.Has(key)) {
+         EZPrefs.NewListPrefs<T>(key, list);
       }
       else {
-         int count = Prefs.Get<int>(key);
-         Prefs.Set<int>(key, count + list.Count);
-         Prefs.NewListPrefs<T>(key, list, count);
+         int count = EZPrefs.Get<int>(key);
+         EZPrefs.Set<int>(key, count + list.Count);
+         EZPrefs.NewListPrefs<T>(key, list, count);
       }
    }
 }
